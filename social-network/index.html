@@ -1,0 +1,487 @@
+<html>
+
+<head>
+  <base href="/" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>InterestLink - Connect Through Passions</title>
+  <style>
+    :root {
+      --primary: #4a90e2;
+      --secondary: #f39c12;
+      --background: #f5f6fa;
+      --text: #2c3e50;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background: var(--background);
+      color: var(--text);
+    }
+
+    .navbar {
+      background: white;
+      padding: 1rem;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 100;
+    }
+
+    .nav-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      color: var(--primary);
+      font-weight: bold;
+      text-decoration: none;
+    }
+
+    .nav-links a {
+      margin-left: 2rem;
+      text-decoration: none;
+      color: var(--text);
+      transition: color 0.3s;
+    }
+
+    .nav-links a:hover {
+      color: var(--primary);
+    }
+
+    .main-container {
+      max-width: 1200px;
+      margin: 80px auto 0;
+      padding: 20px;
+      display: grid;
+      grid-template-columns: 1fr 2fr 1fr;
+      gap: 20px;
+    }
+
+    @media (max-width: 768px) {
+      .main-container {
+        grid-template-columns: 1fr;
+        margin: 60px auto 70px;
+        padding: 10px;
+      }
+
+      .profile-section,
+      .trending {
+        display: none;
+      }
+
+      .navbar {
+        padding: 0.5rem;
+      }
+
+      .nav-links {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: white;
+        display: flex;
+        justify-content: space-around;
+        padding: 0.8rem;
+        box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+      }
+
+      .nav-links a {
+        margin: 0;
+        font-size: 1.2rem;
+      }
+
+      .post-form {
+        border-radius: 0;
+        margin: 0 -10px 20px;
+      }
+
+      .post {
+        border-radius: 0;
+        margin: 0 -10px 10px;
+      }
+    }
+
+    .profile-card {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .profile-image {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      margin: 0 auto;
+      display: block;
+      background: var(--primary);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .profile-stats {
+      display: flex;
+      justify-content: space-around;
+      margin: 20px 0;
+    }
+
+    .stat {
+      text-align: center;
+    }
+
+    .post-form {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      margin-bottom: 20px;
+    }
+
+    .post-input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      resize: none;
+      margin-bottom: 10px;
+    }
+
+    .post-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .btn {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #357abd;
+    }
+
+    .post {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      margin-bottom: 20px;
+    }
+
+    .post-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .post-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      margin-right: 10px;
+      background: var(--primary);
+    }
+
+    .post-meta {
+      font-size: 0.9rem;
+      color: #666;
+    }
+
+    .post-content {
+      margin-bottom: 15px;
+    }
+
+    .post-actions button {
+      background: none;
+      border: none;
+      color: #666;
+      cursor: pointer;
+      margin-right: 15px;
+    }
+
+    .hashtag {
+      color: var(--primary);
+      cursor: pointer;
+    }
+
+    .trending {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .trending-item {
+      padding: 10px 0;
+      border-bottom: 1px solid #eee;
+    }
+
+    @keyframes like-animation {
+      0% {
+        transform: scale(1);
+      }
+
+      50% {
+        transform: scale(1.2);
+      }
+
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    .liked {
+      color: #e74c3c;
+      animation: like-animation 0.3s ease;
+    }
+
+    .footer {
+      background: white;
+      padding: 2rem;
+      margin-top: 2rem;
+      box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .footer-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 2rem;
+    }
+
+    .footer-section h4 {
+      color: var(--primary);
+      margin-bottom: 1rem;
+    }
+
+    .footer-section ul {
+      list-style: none;
+    }
+
+    .footer-section ul li {
+      margin-bottom: 0.5rem;
+    }
+
+    .footer-section ul li a {
+      color: var(--text);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    .footer-section ul li a:hover {
+      color: var(--primary);
+    }
+
+    .footer-bottom {
+      text-align: center;
+      margin-top: 2rem;
+      padding-top: 1rem;
+      border-top: 1px solid #eee;
+    }
+
+    @media (max-width: 768px) {
+      .footer {
+        display: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="navbar">
+    <div class="nav-content">
+      <a href="https://interestlink.com" class="logo">InterestLink</a>
+      <div class="nav-links">
+        <a href="https://interestlink.com/home">🏠</a>
+        <a href="https://interestlink.com/explore">🔍</a>
+        <a href="https://interestlink.com/notifications">🔔</a>
+        <a href="https://interestlink.com/profile">👤</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="main-container">
+    <!-- Left Sidebar -->
+    <div class="profile-section">
+      <div class="profile-card">
+        <div class="profile-image"></div>
+        <h2>John Doe</h2>
+        <p>@johndoe</p>
+        <div class="profile-stats">
+          <div class="stat">
+            <div>234</div>
+            <div>Posts</div>
+          </div>
+          <div class="stat">
+            <div>1.2K</div>
+            <div>Followers</div>
+          </div>
+          <div class="stat">
+            <div>891</div>
+            <div>Following</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="feed">
+      <div class="post-form">
+        <textarea class="post-input" placeholder="Share your interests..." rows="3"></textarea>
+        <div class="post-actions">
+          <div>
+            <button class="btn">📎</button>
+            <button class="btn">🏷️</button>
+          </div>
+          <button class="btn btn-primary">Post</button>
+        </div>
+      </div>
+
+      <div class="posts">
+        <div class="post">
+          <div class="post-header">
+            <div class="post-avatar"></div>
+            <div>
+              <div><strong>Sarah Johnson</strong></div>
+              <div class="post-meta">@sarahj · 30m ago</div>
+            </div>
+          </div>
+          <div class="post-content">
+            Just completed my first oil painting! Art really helps me express myself.
+            <span class="hashtag">#Art</span>
+            <span class="hashtag">#Creativity</span>
+          </div>
+          <div class="post-actions">
+            <button class="like-btn">❤️ 87</button>
+            <button>💬 23</button>
+            <button>🔄 15</button>
+          </div>
+        </div>
+
+        <div class="post">
+          <div class="post-header">
+            <div class="post-avatar"></div>
+            <div>
+              <div><strong>Mike Chen</strong></div>
+              <div class="post-meta">@mikechen · 1h ago</div>
+            </div>
+          </div>
+          <div class="post-content">
+            Finally got my hands on the new camera! Can't wait to shoot some landscapes.
+            <span class="hashtag">#Photography</span>
+            <span class="hashtag">#Nature</span>
+          </div>
+          <div class="post-actions">
+            <button class="like-btn">❤️ 156</button>
+            <button>💬 45</button>
+            <button>🔄 32</button>
+          </div>
+        </div>
+
+        <div class="post">
+          <div class="post-header">
+            <div class="post-avatar"></div>
+            <div>
+              <div><strong>Jane Smith</strong></div>
+              <div class="post-meta">@janesmith · 2h ago</div>
+            </div>
+          </div>
+          <div class="post-content">
+            Just finished reading an amazing book on artificial intelligence!
+            <span class="hashtag">#AI</span>
+            <span class="hashtag">#Technology</span>
+          </div>
+          <div class="post-actions">
+            <button class="like-btn">❤️ 42</button>
+            <button>💬 12</button>
+            <button>🔄 5</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Sidebar -->
+    <div class="trending">
+      <h3>Trending Interests</h3>
+      <div class="trending-item">
+        <div class="hashtag">#Technology</div>
+        <small>1.2K posts</small>
+      </div>
+      <div class="trending-item">
+        <div class="hashtag">#Photography</div>
+        <small>890 posts</small>
+      </div>
+      <div class="trending-item">
+        <div class="hashtag">#Art</div>
+        <small>654 posts</small>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-section">
+        <h4>About</h4>
+        <ul>
+          <li><a href="https://interestlink.com/about">About Us</a></li>
+          <li><a href="https://interestlink.com/careers">Careers</a></li>
+          <li><a href="https://interestlink.com/press">Press</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h4>Support</h4>
+        <ul>
+          <li><a href="https://interestlink.com/help">Help Center</a></li>
+          <li><a href="https://interestlink.com/safety">Safety Center</a></li>
+          <li><a href="https://interestlink.com/community">Community Guidelines</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h4>Legal</h4>
+        <ul>
+          <li><a href="https://interestlink.com/privacy">Privacy Policy</a></li>
+          <li><a href="https://interestlink.com/terms">Terms of Service</a></li>
+          <li><a href="https://interestlink.com/cookies">Cookie Policy</a></li>
+        </ul>
+      </div>
+      <div class="footer-section">
+        <h4>Follow Us</h4>
+        <ul>
+          <li><a href="https://twitter.com/interestlink">Twitter</a></li>
+          <li><a href="https://instagram.com/interestlink">Instagram</a></li>
+          <li><a href="https://facebook.com/interestlink">Facebook</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2023 InterestLink. All rights reserved.</p>
+    </div>
+  </footer>
+  <script src="./JS/main.js"></script>
+
+</body>
+
+</html>

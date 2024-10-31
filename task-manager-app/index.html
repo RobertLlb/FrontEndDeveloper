@@ -1,0 +1,58 @@
+<html>
+
+<head>
+  <base href="">
+  <title>TaskMaster - Sistema de Gerenciamento de Tarefas</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="./CSS/styles.css">
+</head>
+
+<body>
+
+  <button class="sidebar-toggle" onclick="toggleSidebar()">
+    <i class="fas fa-bars"></i>
+  </button>
+
+  <div class="sidebar" id="sidebar">
+    <h2>Meus Painéis</h2>
+    <button class="new-board-btn" onclick="createNewBoard()">
+      <i class="fas fa-plus"></i> Novo Painel
+    </button>
+    <ul class="board-list">
+      <li class="board-item">📋 Painel Principal</li>
+      <li class="board-item">🚀 Projeto XYZ</li>
+      <li class="board-item">💡 Ideias</li>
+    </ul>
+  </div>
+
+  <nav class="navbar">
+    <div class="logo">TaskMaster</div>
+    <div class="nav-right">
+      <i class="fas fa-bell"></i>
+      <div class="user-profile">
+        <div class="avatar">JD</div>
+        <span>John Doe</span>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div id="task-section">
+      <div class="form-group">
+        <input type="text" id="new-task" placeholder="Nova tarefa..." onkeypress="handleNewTask(event)">
+      </div>
+
+      <div class="task-grid" id="task-grid">
+        <!-- Categories will be rendered here -->
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    TaskMaster © 2023 - Todos os direitos reservados
+  </footer>
+
+  <script src="./JS/main.js"></script>
+</body>
+
+</html>
