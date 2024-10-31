@@ -5,28 +5,32 @@ const products = [
       name: "Eco-Friendly Water Bottle",
       price: 24.99,
       description: "Sustainable stainless steel water bottle",
-      image: "bottle"
+      image: "https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=500",
+      longDescription: "Made from premium quality stainless steel, this eco-friendly water bottle keeps your drinks cold for 24 hours or hot for 12 hours. Perfect for everyday use and outdoor activities."
     },
     {
       id: 2,
       name: "Bamboo Utensil Set",
       price: 18.99,
       description: "Reusable bamboo cutlery set",
-      image: "utensils"
+      image: "https://images.unsplash.com/photo-1584346133934-a3e5a39522e5?w=500",
+      longDescription: "Handcrafted bamboo utensil set including fork, knife, spoon and chopsticks. Comes with a convenient carrying case. Perfect for travel and reducing plastic waste."
     },
     {
       id: 3,
       name: "Organic Cotton Tote",
       price: 15.99,
       description: "100% organic cotton shopping bag",
-      image: "tote"
+      image: "https://images.unsplash.com/photo-1597836228306-335eb0b3f0fd?w=500",
+      longDescription: "Durable and stylish organic cotton tote bag. Features reinforced handles and a spacious interior. Perfect for shopping, beach trips, or everyday use."
     },
     {
       id: 4,
       name: "Beeswax Food Wraps",
       price: 22.99,
       description: "Natural alternative to plastic wrap",
-      image: "wraps"
+      image: "https://images.unsplash.com/photo-1621844504025-76fb06055d4b?w=500",
+      longDescription: "Reusable food wraps made from organic cotton and beeswax. Set includes 3 different sizes. Perfect for keeping food fresh without using plastic."
     }
   ];
 
@@ -38,17 +42,19 @@ const products = [
   function renderProducts(products) {
     const productsContainer = document.getElementById('products');
     productsContainer.innerHTML = products.map(product => `
-  <div class="product-card">
+  <div class="product-card" onclick="showProductModal(${product.id})">
     <div class="product-image">
-      <svg width="100" height="100" viewBox="0 0 100 100">
-        ${getProductIcon(product.image)}
-      </svg>
+      <img 
+        src="${product.image}" 
+        alt="${product.name}"
+        style="width:100%;height:100%;object-fit:cover;"
+      >
     </div>
     <div class="product-info">
       <h3 class="product-title">${product.name}</h3>
       <p>${product.description}</p>
-      <div class="product-price">$${product.price.toFixed(2)}</div>
-      <button class="add-to-cart" onclick="addToCart(${product.id})">
+      <div class="product-price">${product.price.toFixed(2)}</div>
+      <button class="add-to-cart" onclick="event.stopPropagation();addToCart(${product.id})">
         Add to Cart
       </button>
     </div>
@@ -173,5 +179,56 @@ const products = [
     });
   });
 
+  // Modal functions
+  function showProductModal(productId) {
+    const product = products.find(p => p.id === productId);
+    const modal = document.getElementById('productModal');
+    const content = document.getElementById('productModalContent');
+
+    if (!modal || !content || !product) {
+      console.error('Required elements not found');
+      return;
+    }
+
+    content.innerHTML = `
+  <img 
+    src="${product.image}" 
+    alt="${product.name}"
+    style="width:100%;height:300px;object-fit:cover;border-radius:8px;"
+  >
+  <h2 style="margin:20px 0">${product.name}</h2>
+  <p style="color:#666;margin-bottom:20px">${product.longDescription}</p>
+  <div style="display:flex;justify-content:space-between;align-items:center;margin:20px 0">
+    <div style="font-size:24px;font-weight:bold;color:var(--primary)">${product.price.toFixed(2)}</div>
+    <button class="add-to-cart" style="width:auto" onclick="addToCart(${product.id})">
+      Add to Cart
+    </button>
+  </div>
+`;
+
+    modal.style.display = 'block';
+  }
+
+  function closeProductModal() {
+    const modal = document.getElementById('productModal');
+    if (modal) {
+      modal.style.display = 'none';
+    }
+  }
+
+  // Close modal when clicking outside
+  document.addEventListener('DOMContentLoaded', function () {
+    const modal = document.getElementById('productModal');
+    if (modal) {
+      modal.addEventListener('click', function (e) {
+        if (e.target === this) {
+          closeProductModal();
+        }
+      });
+    }
+  });
+
   // Initial render
-  renderProducts(products);
+  document.addEventListener('DOMContentLoaded', function () {
+    renderProducts(products);
+  });
