@@ -1,0 +1,764 @@
+<html><head><base href="." /><title>Recipe & Meal Planning App</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet"><script src="https://kit.fontawesome.com/12345abcde.js" crossorigin="anonymous"></script><style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  :root {
+    --primary: #ff6b6b;
+    --secondary: #4ecdc4;
+    --dark: #2d3436;
+    --light: #f9f9f9;
+  }
+
+  body {
+    background-color: var(--light);
+  }
+
+  .navbar {
+    background: white;
+    padding: 1rem 2rem;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 100;
+  }
+
+  .search-container {
+    max-width: 800px;
+    margin: 100px auto 20px;
+    padding: 0 20px;
+  }
+
+  .search-bar {
+    width: 100%;
+    padding: 15px;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+  }
+
+  .search-bar:focus {
+    border-color: var(--secondary);
+    outline: none;
+  }
+
+  .filters {
+    display: flex;
+    gap: 10px;
+    margin: 20px 0;
+    flex-wrap: wrap;
+  }
+
+  .filter-btn {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 20px;
+    background: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 1px solid #ddd;
+  }
+
+  .filter-btn.active {
+    background: var(--secondary);
+    color: white;
+  }
+
+  .recipes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .recipe-card {
+    background: white;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+  }
+
+  .recipe-card:hover {
+    transform: translateY(-5px);
+  }
+
+  .recipe-image {
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+  }
+
+  .recipe-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+
+  .recipe-card:hover .recipe-image img {
+    transform: scale(1.05);
+  }
+
+  .recipe-content {
+    padding: 20px;
+  }
+
+  .recipe-title {
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+    color: var(--dark);
+  }
+
+  .recipe-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #666;
+    font-size: 0.9rem;
+  }
+
+  .action-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+  }
+
+  .btn {
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .btn-primary {
+    background: var(--primary);
+    color: white;
+  }
+
+  .btn-secondary {
+    background: var(--secondary);
+    color: white;
+  }
+
+  .planner-section {
+    position: fixed;
+    right: -400px;
+    top: 0;
+    width: 400px;
+    height: 100vh;
+    background: white;
+    box-shadow: -2px 0 10px rgba(0,0,0,0.1);
+    padding: 20px;
+    transition: right 0.3s ease;
+    overflow-y: auto;
+  }
+
+  .recipe-details {
+    padding: 20px;
+    position: relative;
+  }
+
+  .recipe-details img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-bottom: 15px;
+  }
+
+  .recipe-details h2 {
+    margin-bottom: 15px;
+  }
+
+  .recipe-details .meta {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+    color: #666;
+  }
+
+  .recipe-details .ingredients {
+    margin: 20px 0;
+  }
+
+  .recipe-details .close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #666;
+  }
+
+  .planner-section.active {
+    right: 0;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .recipe-card {
+    animation: fadeIn 0.5s ease forwards;
+  }
+
+  .create-recipe-btn {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: var(--primary);
+    color: white;
+    padding: 15px 25px;
+    border-radius: 30px;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    z-index: 1000;
+  }
+
+  .modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 1000;
+  }
+
+  .modal-content {
+    background: white;
+    width: 90%;
+    max-width: 800px;
+    margin: 50px auto;
+    padding: 30px;
+    border-radius: 15px;
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  .form-group {
+    margin-bottom: 20px;
+  }
+
+  .form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+  }
+
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1rem;
+  }
+
+  .ingredients-table {
+    margin: 15px 0;
+    width: 100%;
+    overflow-x: auto;
+  }
+
+  .ingredients-table table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .ingredients-table th,
+  .ingredients-table td {
+    padding: 8px;
+    border: 1px solid #ddd;
+    text-align: left;
+  }
+
+  .ingredients-table input {
+    width: 100%;
+    padding: 5px;
+    border: none;
+  }
+
+  .delete-ingredient {
+    color: var(--primary);
+    cursor: pointer;
+    background: none;
+    border: none;
+  }
+
+  .language-toggle {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .language-btn {
+    padding: 8px 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background: white;
+    cursor: pointer;
+  }
+
+  .language-btn.active {
+    background: var(--secondary);
+    color: white;
+    border-color: var(--secondary);
+  }
+
+  .form-section {
+    display: none;
+  }
+
+  .form-section.active {
+    display: block;
+  }
+</style></head><body>
+  <nav class="navbar">
+    <h1>Recipe Planner</h1>
+  </nav>
+
+  <div class="search-container">
+    <input type="text" class="search-bar" placeholder="Search for recipes...">
+    <div class="filters">
+      <button class="filter-btn active">All</button>
+      <button class="filter-btn">Breakfast</button>
+      <button class="filter-btn">Lunch</button>
+      <button class="filter-btn">Dinner</button>
+      <button class="filter-btn">Vegetarian</button>
+      <button class="filter-btn">Vegan</button>
+    </div>
+  </div>
+
+  <div class="recipes-grid">
+    <!-- Recipe Cards will be dynamically generated here -->
+  </div>
+
+  <div class="planner-section" id="planner">
+    <h2>Meal Planner</h2>
+    <div id="weekly-plan"></div>
+  </div>
+
+  <button class="create-recipe-btn" onclick="openRecipeModal()">
+    <i class="fas fa-plus"></i> Create Recipe
+  </button>
+
+  <div class="modal" id="recipeModal">
+    <div class="modal-content">
+      <div class="language-toggle">
+        <button class="language-btn active" onclick="toggleLanguage('en')">English</button>
+        <button class="language-btn" onclick="toggleLanguage('pt')">Português</button>
+      </div>
+
+      <form id="recipeForm" onsubmit="submitRecipe(event)">
+        <div class="form-section active" id="enForm">
+          <div class="form-group">
+            <label>Recipe Title</label>
+            <input type="text" name="titleEn" required>
+          </div>
+          <div class="form-group">
+            <label>Category</label>
+            <select name="typeEn" required>
+              <option value="Breakfast">Breakfast</option>
+              <option value="Lunch">Lunch</option>
+              <option value="Dinner">Dinner</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Ingredients / Ingredientes</label>
+            <div class="ingredients-table">
+              <table id="ingredientsTable">
+                <thead>
+                  <tr>
+                    <th>Quantity</th>
+                    <th>Unit</th>
+                    <th>Ingredient (EN)</th>
+                    <th>Ingredient (PT)</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                </tbody>
+              </table>
+              <button type="button" class="btn btn-secondary" onclick="addIngredientRow()">
+                Add Ingredient / Adicionar Ingrediente
+              </button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Instructions</label>
+            <textarea name="instructionsEn" rows="6" required></textarea>
+          </div>
+        </div>
+
+        <div class="form-section" id="ptForm">
+          <div class="form-group">
+            <label>Título da Receita</label>
+            <input type="text" name="titlePt" required>
+          </div>
+          <div class="form-group">
+            <label>Categoria</label>
+            <select name="typePt" required>
+              <option value="Breakfast">Café da Manhã</option>
+              <option value="Lunch">Almoço</option>
+              <option value="Dinner">Jantar</option>
+            </select>
+          </div>
+          <!-- Ingredients section is now combined above -->
+          <div class="form-group">
+            <label>Instruções</label>
+            <textarea name="instructionsPt" rows="6" required></textarea>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Preparation Time (minutes)</label>
+          <input type="number" name="time" required>
+        </div>
+        <div class="form-group">
+          <label>Difficulty</label>
+          <select name="difficulty" required>
+            <option value="Easy">Easy / Fácil</option>
+            <option value="Medium">Medium / Médio</option>
+            <option value="Hard">Hard / Difícil</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Dietary Options</label>
+          <div>
+            <input type="checkbox" name="isVegetarian" id="vegetarian">
+            <label for="vegetarian">Vegetarian / Vegetariano</label>
+          </div>
+          <div>
+            <input type="checkbox" name="isVegan" id="vegan">
+            <label for="vegan">Vegan / Vegano</label>
+          </div>
+        </div>
+        <div class="action-buttons">
+          <button type="submit" class="btn btn-primary">Save Recipe / Salvar Receita</button>
+          <button type="button" class="btn btn-secondary" onclick="closeRecipeModal()">Cancel / Cancelar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+<script>
+const recipes = [
+  {
+    id: 1,
+    title: "Quinoa Buddha Bowl",
+    type: "Lunch",
+    time: "30 min",
+    difficulty: "Easy",
+    rating: 4.5,
+    isVegetarian: true,
+    isVegan: true,
+    ingredients: [
+      { quantity: 100, unit: "g", nameEn: "Quinoa", namePt: "Quinoa" },
+      { quantity: 1, unit: "unit", nameEn: "Avocado", namePt: "Abacate" },
+      { quantity: 100, unit: "g", nameEn: "Cherry Tomatoes", namePt: "Tomate Cereja" }
+    ]
+  },
+  {
+    id: 2,
+    title: "Blueberry Pancakes",
+    type: "Breakfast",
+    time: "20 min",
+    difficulty: "Easy",
+    rating: 4.8,
+    isVegetarian: true,
+    isVegan: false,
+    ingredients: [
+      { quantity: 200, unit: "g", nameEn: "Flour", namePt: "Farinha" },
+      { quantity: 200, unit: "ml", nameEn: "Milk", namePt: "Leite" },
+      { quantity: 100, unit: "g", nameEn: "Blueberries", namePt: "Mirtilos" }
+    ]
+  },
+  {
+    id: 3,
+    title: "Grilled Salmon",
+    type: "Dinner",
+    time: "25 min",
+    difficulty: "Medium",
+    rating: 4.6,
+    isVegetarian: false,
+    isVegan: false,
+    ingredients: [
+      { quantity: 200, unit: "g", nameEn: "Salmon fillet", namePt: "Filé de Salmão" },
+      { quantity: 2, unit: "tbsp", nameEn: "Olive oil", namePt: "Azeite" },
+      { quantity: 1, unit: "unit", nameEn: "Lemon", namePt: "Limão" }
+    ]
+  },
+  {
+    id: 4,
+    title: "Açaí Bowl",
+    type: "Breakfast",
+    time: "15 min",
+    difficulty: "Easy",
+    rating: 4.9,
+    isVegetarian: true,
+    isVegan: true,
+    ingredients: [
+      { quantity: 200, unit: "g", nameEn: "Açaí pulp", namePt: "Polpa de Açaí" },
+      { quantity: 1, unit: "unit", nameEn: "Banana", namePt: "Banana" },
+      { quantity: 30, unit: "g", nameEn: "Granola", namePt: "Granola" }
+    ]
+  },
+  {
+    id: 5,
+    title: "Feijoada",
+    type: "Lunch",
+    time: "180 min",
+    difficulty: "Hard",
+    rating: 4.7,
+    isVegetarian: false,
+    isVegan: false,
+    ingredients: [
+      { quantity: 500, unit: "g", nameEn: "Black beans", namePt: "Feijão preto" },
+      { quantity: 200, unit: "g", nameEn: "Pork", namePt: "Carne de porco" },
+      { quantity: 100, unit: "g", nameEn: "Bacon", namePt: "Bacon" }
+    ]
+  },
+  {
+    id: 6,
+    title: "Vegan Curry",
+    type: "Dinner",
+    time: "45 min",
+    difficulty: "Medium",
+    rating: 4.4,
+    isVegetarian: true,
+    isVegan: true,
+    ingredients: [
+      { quantity: 200, unit: "g", nameEn: "Chickpeas", namePt: "Grão de bico" },
+      { quantity: 400, unit: "ml", nameEn: "Coconut milk", namePt: "Leite de coco" },
+      { quantity: 2, unit: "tbsp", nameEn: "Curry powder", namePt: "Curry em pó" }
+    ]
+  }
+];
+
+function createRecipeCard(recipe) {
+  const ingredientsList = recipe.ingredients ? 
+    `<div class="ingredients-list">
+      <h4>Ingredients:</h4>
+      <table>
+        ${recipe.ingredients.map(ing => `
+          <tr>
+            <td>${ing.quantity} ${ing.unit}</td>
+            <td>${ing.nameEn}</td>
+          </tr>
+        `).join('')}
+      </table>
+    </div>` : '';
+
+  return `
+    <div class="recipe-card" onclick="showRecipeDetails(${recipe.id})">
+      <div class="recipe-image">
+        <img 
+          src="https://source.unsplash.com/400x300/?${encodeURIComponent(recipe.title)}" 
+          alt="${recipe.title} dish presentation"
+          width="400"
+          height="300"
+        >
+      </div>
+      <div class="recipe-content">
+        <h3 class="recipe-title">${recipe.title}</h3>
+        <div class="recipe-meta">
+          <span>${recipe.time}</span>
+          <span>${recipe.difficulty}</span>
+          <span>★ ${recipe.rating}</span>
+        </div>
+        ${ingredientsList}
+        <div class="action-buttons">
+          <button class="btn btn-primary" onclick="saveRecipe(${recipe.id})">Save</button>
+          <button class="btn btn-secondary" onclick="addToPlanner(${recipe.id})">Add to Plan</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function renderRecipes(recipesList = recipes) {
+  const recipesGrid = document.querySelector('.recipes-grid');
+  recipesGrid.innerHTML = recipesList.map(recipe => createRecipeCard(recipe)).join('');
+}
+
+function saveRecipe(id) {
+  const savedRecipes = JSON.parse(localStorage.getItem('savedRecipes') || '[]');
+  if (!savedRecipes.includes(id)) {
+    savedRecipes.push(id);
+    localStorage.setItem('savedRecipes', JSON.stringify(savedRecipes));
+    alert('Recipe saved to favorites!');
+  }
+}
+
+function addToPlanner(id) {
+  const planner = document.getElementById('planner');
+  planner.classList.add('active');
+}
+
+function showRecipeDetails(id) {
+  const recipe = recipes.find(r => r.id === id);
+  const planner = document.getElementById('planner');
+  
+  planner.innerHTML = `
+    <button class="close-btn" onclick="closePlanner()">×</button>
+    <div class="recipe-details">
+      <img 
+        src="https://source.unsplash.com/400x300/?${encodeURIComponent(recipe.title)}" 
+        alt="${recipe.title} dish presentation"
+        width="400"
+        height="300"
+      >
+      <h2>${recipe.title}</h2>
+      <div class="meta">
+        <span>${recipe.time}</span>
+        <span>${recipe.difficulty}</span>
+        <span>★ ${recipe.rating}</span>
+      </div>
+      <div class="ingredients">
+        <h3>Ingredients</h3>
+        <table>
+          ${recipe.ingredients.map(ing => `
+            <tr>
+              <td>${ing.quantity} ${ing.unit}</td>
+              <td>${ing.nameEn}</td>
+            </tr>
+          `).join('')}
+        </table>
+      </div>
+      <div class="action-buttons">
+        <button class="btn btn-primary" onclick="saveRecipe(${recipe.id})">Save</button>
+        <button class="btn btn-secondary" onclick="addToPlanner(${recipe.id})">Add to Plan</button>
+      </div>
+    </div>
+  `;
+  
+  planner.classList.add('active');
+}
+
+function closePlanner() {
+  document.getElementById('planner').classList.remove('active');
+}
+
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', (e) => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    e.target.classList.add('active');
+    
+    const filter = e.target.textContent;
+    if (filter === 'All') {
+      renderRecipes();
+    } else {
+      const filtered = recipes.filter(recipe => {
+        if (filter === 'Vegetarian') return recipe.isVegetarian;
+        if (filter === 'Vegan') return recipe.isVegan;
+        return recipe.type === filter;
+      });
+      renderRecipes(filtered);
+    }
+  });
+});
+
+document.querySelector('.search-bar').addEventListener('input', (e) => {
+  const searchTerm = e.target.value.toLowerCase();
+  const filtered = recipes.filter(recipe => 
+    recipe.title.toLowerCase().includes(searchTerm)
+  );
+  renderRecipes(filtered);
+});
+
+renderRecipes();
+
+function openRecipeModal() {
+  document.getElementById('recipeModal').style.display = 'block';
+}
+
+function closeRecipeModal() {
+  document.getElementById('recipeModal').style.display = 'none';
+  document.getElementById('recipeForm').reset();
+}
+
+function toggleLanguage(lang) {
+  document.querySelectorAll('.language-btn').forEach(btn => btn.classList.remove('active'));
+  document.querySelector(`.language-btn[onclick*="${lang}"]`).classList.add('active');
+  
+  document.querySelectorAll('.form-section').forEach(section => section.classList.remove('active'));
+  document.getElementById(`${lang}Form`).classList.add('active');
+}
+
+function submitRecipe(event) {
+  event.preventDefault();
+  
+  const formData = new FormData(event.target);
+  const ingredientsRows = document.querySelectorAll('#ingredientsTable tbody tr');
+  const ingredients = Array.from(ingredientsRows).map(row => ({
+    quantity: row.cells[0].querySelector('input').value,
+    unit: row.cells[1].querySelector('select').value,
+    nameEn: row.cells[2].querySelector('input').value,
+    namePt: row.cells[3].querySelector('input').value
+  }));
+
+  const newRecipe = {
+    id: recipes.length + 1,
+    title: formData.get('titleEn'),
+    titlePt: formData.get('titlePt'),
+    type: formData.get('typeEn'),
+    time: formData.get('time') + ' min',
+    difficulty: formData.get('difficulty'),
+    rating: 0,
+    isVegetarian: formData.get('isVegetarian') === 'on',
+    isVegan: formData.get('isVegan') === 'on',
+    ingredients: ingredients,
+    instructionsEn: formData.get('instructionsEn'),
+    instructionsPt: formData.get('instructionsPt')
+  };
+
+  recipes.push(newRecipe);
+  renderRecipes();
+  closeRecipeModal();
+  alert('Recipe created successfully! / Receita criada com sucesso!');
+}
+
+// Initialize
+// Add ingredient row function
+function addIngredientRow() {
+  const tbody = document.querySelector('#ingredientsTable tbody');
+  const row = document.createElement('tr');
+  row.innerHTML = `
+    <td><input type="number" step="0.01" required></td>
+    <td><select required>
+      <option value="g">g</option>
+      <option value="kg">kg</option>
+      <option value="ml">ml</option>
+      <option value="L">L</option>
+      <option value="unit">unit/unidade</option>
+      <option value="tbsp">tbsp/colher sopa</option>
+      <option value="tsp">tsp/colher chá</option>
+    </select></td>
+    <td><input type="text" required></td>
+    <td><input type="text" required></td>
+    <td><button type="button" class="delete-ingredient" onclick="this.closest('tr').remove()">
+      <i class="fas fa-trash"></i>
+    </button></td>
+  `;
+  tbody.appendChild(row);
+}
+
+renderRecipes();
+</script>
+</body></html>
